@@ -119,14 +119,14 @@ class sfFirePHPLogger extends sfVarLogger
     $this->sfFire->group('Logs '.count($logs), array('Collapsed' => true));
     foreach($logs as $log)
     {
-      if(!count($log['debug_stack']))
+      if(!count($log['debug_backtrace']))
       {
          $this->fireLog($log['type'], $log['message'], $log['priority']);
       }
       else
       {
         $this->sfFire->group($log['type'].': '.$log['message'], array('Collapsed' => true));
-        foreach($log['debug_stack'] as $debug)
+        foreach($log['debug_backtrace'] as $debug)
         {
           $this->sfFire->fb($debug);
         }

@@ -1,0 +1,122 @@
+sfFirePHP plugin     
+================
+
+Overview
+--------
+
+This plugin integrates FirePHP into symfony.
+
+According to the [firephp web site](http://www.firephp.org "firephp.org")
+
+> FirePHP enables you to print to your Firebug Console using a simple PHP function call.
+> What makes FirePHP different?
+> All data is sent via a set of X-FirePHP-Data response headers. This means that the debugging data will not interfere with the content on your page. Thus FirePHP is ideally suited for AJAX development.
+
+
+Installation
+------------
+
+    php symfony plugin:install sfFirePHPPlugin
+
+Upgrade plugins
+---------------
+
+    php symfony plugin:upgrade -r=1.1.11 sfFirePHPPlugin
+
+Uninstallation
+--------------
+
+    php symfony plugin:uninstall sfFirePHPPlugin
+
+Requirements
+------------
+
+### Client Side:
+
+* [Firefox](http://www.getfirefox.com/ "Firefox") - Only Works with the Firefox browser :)
+* [Firebug](http://www.getfirebug.com/ "Firebug") - Of course you need firebug.
+* [FirePHP](http://www.firephp.org/ "FirePHP") - Also install the firephp extension for firefox.
+	
+Usage
+-----
+
+You can check a FirePHP Tutorial [here](hhttp://www.firephp.org/Wiki/Main/QuickStart "FirePHP Tutorial"):                          
+	
+After you have Firefox installed, with the firebug and firephp extensions, you will need to install the `sfFirePHPPlugin`.
+
+Then inside a template you can do something like:
+
+
+    <?php $firephp = sfFirePHP::getInstance(true); ?>
+    <?php $firephp->fb('Hello World'); // Defaults to FirePHP::LOG ?>
+    <?php $firephp->fb('Log message'  ,FirePHP::LOG); ?>
+    <?php $firephp->fb('Info message' ,FirePHP::INFO); ?>
+    <?php $firephp->fb('Warn message' ,FirePHP::WARN);  ?>
+    <?php $firephp->fb('Error message',FirePHP::ERROR); ?>
+
+
+When you load the page, those messages will appear on your firebug console.
+
+Web Debug *new*
+---------------
+
+Make sure to apply [this](http://code.google.com/p/firephp/issues/detail?id=113 "Log throttling leads to messages showing up outside their group") patch first if firephp is < 0.3.2
+
+Copy RequestProcessor.js to a public dir or
+
+    php symfony plugin:publish-assets
+
+RequestProcessor.js enables this plugin to dump the configuration in directory mode. The default processor in firephp does not handle FirePHP::DUMP.
+
+Edit factories.yml
+
+      logger:
+        class: sfAggregateLogger
+        param:
+          level: debug
+          loggers:
+            sf_fire_php:
+              class: sfFirePHPLogger
+              param:
+                level: debug
+                processor: http://localhost/js/RequestProcessor.js #make sure this is absolute
+                fire_php_options:
+                  maxObjectDepth: 10
+                  maxArrayDepth: 20
+                  useNativeJsonEncode: true
+                  includeLineNumbers: true
+                renderer:
+
+
+If firebug warns about unathorized processor injection, just add the host in "Allowed Sites...".
+
+Helper *new*
+--------------
+
+The helper file is loaded automatically in the global scope, simply use:
+
+<?php flog($object, $level) ?> - where $level can be one of FirePHP::LOG, FirePHP::INFO, FirePHP::WARN, FirePHP::ERROR
+
+or use the shortcut functions:
+
+<?php finfo($object) ?>
+<?php fwarn($object) ?>
+<?php ferror($object) ?>
+
+Screenshots
+-----------
+[![Screenshot 1][thumb1]][link1]
+[![Screenshot 2][thumb2]][link2]
+
+
+License
+-------
+
+For the full copyright and license information, please view the LICENSE file that was distributed with this source code.
+
+
+[thumb1]: http://i209.photobucket.com/albums/bb311/marfillaster/th_screen1.jpg
+[link1]: http://s209.photobucket.com/albums/bb311/marfillaster/?action=view&current=screen1.jpg "click for larger image"
+
+[thumb2]: http://i209.photobucket.com/albums/bb311/marfillaster/th_screen2.jpg
+[link2]: http://s209.photobucket.com/albums/bb311/marfillaster/?action=view&current=screen2.jpg "click for larger image"

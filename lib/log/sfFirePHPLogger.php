@@ -261,4 +261,4 @@ class sfFirePHPLogger extends sfVarLogger
   {
       return Propel::getConfiguration(PropelConfiguration::TYPE_OBJECT);
   }
-
+}
